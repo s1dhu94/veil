@@ -1,6 +1,6 @@
 # Veil: ask AI about private documents, privately
 
-**Live app:** https://veil-hybrid-3fc9f.web.app  
+**Live app:** https://veil-app-c6097.web.app  
 Built for **#BuildHybridAI 2026** with **Firebase AI Logic hybrid inference** (Web / Chrome).
 
 People paste bank letters, lab reports and rental notices into AI chatbots every day, because they need help understanding them. Those documents are full of Aadhaar and PAN numbers, card and account numbers, phone numbers, names and diagnoses. Veil lets you get the same help **without the private parts ever leaving your device**.

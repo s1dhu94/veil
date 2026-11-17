@@ -220,8 +220,9 @@ function friendlyError(e) {
   const m = String(e?.message || e);
   if (/app.?check/i.test(m)) return 'App Check could not verify this browser. Reload the page and try again.';
   if (/quota|429|exhausted/i.test(m)) return 'The cloud model is busy (quota reached). Try again in a minute.';
-  if (/not available|API_NOT_ENABLED|LanguageModel/i.test(m)) return 'On-device AI is not available in this browser. Choose Auto or Cloud.';
-  return m.slice(0, 200);
+  if (/free tier|billing|PERMISSION_DENIED|403/i.test(m)) return 'The cloud model is not available for this project right now. If on-device AI is ready, choose "On-device only".';
+  if (/Local LanguageModel|API_NOT_ENABLED/i.test(m)) return 'On-device AI is not available in this browser. Choose Auto or Cloud.';
+  return 'Something went wrong talking to the model. Please try again.';
 }
 
 function renderReceipt({ ms, onDevice, restored, unknown, promptChars, vault }) {
