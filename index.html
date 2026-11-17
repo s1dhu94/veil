@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Veil: ask AI about private documents, privately</title>
+  <meta name="description" content="Veil masks personal details on your device before any text reaches cloud AI, then restores them locally in the answer." />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="/" aria-label="Veil home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 9c4-4 20-4 24 0v4c0 9-6 14-12 16C10 27 4 22 4 13z" fill="currentColor" opacity=".15"/><path d="M4 9c4-4 20-4 24 0M8 15h16M10 20h12M13 25h6" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
+      <span>Veil</span>
+    </a>
+    <button id="device-pill" class="pill" type="button" title="On-device AI status">
+      <span class="dot"></span><span id="device-label">Checking on-device AI…</span>
+    </button>
+  </header>
+
+  <main>
+    <section class="hero" id="hero">
+      <h1>Ask AI about private documents. <br /><em>Without handing over the private parts.</em></h1>
+      <p class="lede">Veil finds names, ID numbers, accounts and health details <strong>on your device</strong>, swaps them for placeholders, sends only the masked text to the cloud model, then puts the real details back into the answer locally.</p>
+    </section>
+
+    <ol class="steps" aria-label="Progress">
+      <li data-step="1" class="on">Paste</li>
+      <li data-step="2">Review what's hidden</li>
+      <li data-step="3">Get your answer</li>
+    </ol>
+
+    <!-- STEP 1 -->
+    <section class="card" id="step1">
+      <div class="card-head">
+        <h2>1. Paste a document</h2>
+        <span class="muted small">Stays on this device until you approve the masked version</span>
+      </div>
+      <div class="samples" role="group" aria-label="Try a fictional sample">
+        <span class="small muted">Try a fictional sample:</span>
+        <div id="sample-buttons" class="chips"></div>
+      </div>
+      <textarea id="input" rows="11" spellcheck="false" placeholder="Paste an email, letter, report or notice here…"></textarea>
+      <div class="row">
+        <label class="small muted" for="custom">Always hide (comma separated, saved only in this browser)</label>
+        <input id="custom" type="text" placeholder="e.g. my employer's name, my street" />
+      </div>
+      <div class="actions">
+        <button id="scan" class="primary" type="button">Find private details</button>
+      </div>
+    </section>
+
+    <!-- STEP 2 -->
+    <section class="card hidden" id="step2">
+      <div class="card-head">
+        <h2>2. Review what's hidden</h2>
+        <span id="scan-note" class="small muted"></span>
+      </div>
+      <p class="small muted">Highlighted text will be replaced before anything leaves your device. Tap a highlight to reveal it, or select any other text and press <kbd>Hide selection</kbd>.</p>
+      <div class="split">
+        <div>
+          <div class="pane-title">On your device</div>
+          <div id="review" class="doc" tabindex="0"></div>
+          <button id="hide-sel" class="ghost small-btn" type="button">Hide selection</button>
+        </div>
+        <div>
+          <div class="pane-title">What the cloud will see</div>
+          <pre id="outgoing" class="doc mono"></pre>
+        </div>
+      </div>
+      <div class="legend" id="legend"></div>
+
+      <div class="task-pick">
+        <div class="pane-title">What do you need?</div>
+        <div id="tasks" class="tasks"></div>
+        <input id="extra" type="text" placeholder="Optional: add your own question" />
+      </div>
+      <div class="route">
+        <span class="pane-title">Where should the answer run?</span>
+        <div class="seg" role="radiogroup" aria-label="Inference route">
+          <label><input type="radio" name="route" value="auto" checked /> Auto <small>on-device if ready, else cloud</small></label>
+          <label><input type="radio" name="route" value="cloud" /> Cloud <small>best for long documents</small></label>
+          <label id="route-device"><input type="radio" name="route" value="device" /> On-device only <small>nothing leaves</small></label>
+        </div>
+      </div>
+      <div class="actions">
+        <button id="back1" class="ghost" type="button">Back</button>
+        <button id="ask" class="primary" type="button">Ask with masked text</button>
+      </div>
+    </section>
+
+    <!-- STEP 3 -->
+    <section class="card hidden" id="step3">
+      <div class="card-head">
+        <h2>3. Your answer</h2>
+        <span id="answer-source" class="badge"></span>
+      </div>
+      <div class="split">
+        <div>
+          <div class="pane-title">Restored on your device</div>
+          <div id="answer" class="doc answer" aria-live="polite"></div>
+          <div class="actions left">
+            <button id="copy" class="ghost" type="button">Copy answer</button>
+          </div>
+        </div>
+        <div>
+          <div class="pane-title">What the model actually returned</div>
+          <pre id="raw" class="doc mono"></pre>
+        </div>
+      </div>
+      <div class="receipt" id="receipt"></div>
+      <div class="actions">
+        <button id="back2" class="ghost" type="button">Change what's hidden</button>
+        <button id="restart" class="primary" type="button">New document</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Built with Firebase AI Logic hybrid inference (Gemini Nano in Chrome + Gemini in the cloud), App Check and Remote Config. Sample documents are fictional. Veil has no accounts, analytics or server-side storage.</p>
+  </footer>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

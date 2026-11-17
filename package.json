@@ -1,0 +1,22 @@
+{
+  "name": "veil",
+  "version": "1.0.0",
+  "description": "Ask cloud AI about private documents without sending the private parts: on-device masking with Firebase AI Logic hybrid inference.",
+  "scripts": {
+    "test": "vitest run",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "firebase": "^13.4.0"
+  },
+  "type": "module",
+  "devDependencies": {
+    "firebase-tools": "^15.36.0",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.0"
+  },
+  "private": true
+}
