@@ -154,3 +154,13 @@ describe('applyVault and rendering', () => {
     expect(esc('"<&>')).toBe('&quot;&lt;&amp;&gt;');
   });
 });
+
+describe('markdown lists', () => {
+  it('keeps numbering across blank lines and nests indented bullets', () => {
+    const html = miniMarkdown('1. **A**\n   * x\n   * y\n\n2. B\n3. C\n\nDone');
+    expect(html).toBe('<ol><li><strong>A</strong><ul><li>x</li><li>y</li></ul></li><li>B</li><li>C</li></ol><p>Done</p>');
+  });
+  it('still renders plain bullets', () => {
+    expect(miniMarkdown('- a\n- b')).toBe('<ul><li>a</li><li>b</li></ul>');
+  });
+});

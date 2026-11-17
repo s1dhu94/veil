@@ -141,3 +141,4 @@ footer p { max-width: 720px; margin: 0 auto; }
   .brand span { display: none; }
   .pill { max-width: 78vw; }
 }
+.receipt:empty { display: none; }

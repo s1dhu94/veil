@@ -16,26 +16,46 @@ export function miniMarkdown(src) {
   const lines = esc(src).split(/\r?\n/);
   let html = '';
   let list = null;
+  let sub = false; // nested <ul> inside the last <li> of an <ol>
   const inline = (t) =>
     t
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
       .replace(/(^|[^*])\*(?!\s)(.+?)\*(?!\*)/g, '$1<em>$2</em>')
       .replace(new RegExp(OPEN + '([^' + CLOSE + ']*)' + CLOSE, 'g'), '<mark class="restored">$1</mark>');
-  const close = () => { if (list) { html += `</${list}>`; list = null; } };
+  const closeSub = () => { if (sub) { html += '</ul></li>'; sub = false; } };
+  const close = () => {
+    if (sub) { html += '</ul></li>'; sub = false; }
+    else if (list === 'ol' && html.endsWith('<li-open>')) html = html.slice(0, -9) + '</li>';
+    if (list) {
+      if (html.endsWith('<li-open>')) html = html.slice(0, -9) + '</li>';
+      html += `</${list}>`;
+      list = null;
+    }
+  };
+  const endOlItem = () => { if (html.endsWith('<li-open>')) html = html.slice(0, -9) + '</li>'; };
   for (const raw of lines) {
     const line = raw.trimEnd();
     let m;
-    if ((m = line.match(/^\s*[-*•]\s+(.*)$/))) {
+    if (list === 'ol' && (m = line.match(/^\s{2,}[-*•]\s+(.*)$/))) {
+      if (!sub) {
+        if (html.endsWith('<li-open>')) html = html.slice(0, -9);
+        html += '<ul>';
+        sub = true;
+      }
+      html += `<li>${inline(m[1])}</li>`;
+    } else if ((m = line.match(/^\s*[-*•]\s+(.*)$/))) {
       if (list !== 'ul') { close(); html += '<ul>'; list = 'ul'; }
       html += `<li>${inline(m[1])}</li>`;
     } else if ((m = line.match(/^\s*\d+[.)]\s+(.*)$/))) {
       if (list !== 'ol') { close(); html += '<ol>'; list = 'ol'; }
-      html += `<li>${inline(m[1])}</li>`;
+      closeSub();
+      endOlItem();
+      html += `<li>${inline(m[1])}<li-open>`;
     } else if ((m = line.match(/^#{1,4}\s+(.*)$/))) {
       close();
       html += `<h4>${inline(m[1])}</h4>`;
     } else if (!line.trim()) {
-      close();
+      if (list !== 'ol') close();
     } else {
       close();
       html += `<p>${inline(line)}</p>`;
